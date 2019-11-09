@@ -129,9 +129,9 @@ port map(
 
 rom1 : entity work.Z80_BASIC_ROM -- 8KB BASIC
 port map(
-	address => cpuAddress(12 downto 0),
-	clock => clk,
-	q => basRomData
+	addra => cpuAddress(12 downto 0),
+	clka => clk,
+	douta => basRomData
 );
 	
 -- ____________________________________________________________________________________
