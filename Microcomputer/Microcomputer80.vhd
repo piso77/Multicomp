@@ -21,7 +21,7 @@ use  IEEE.STD_LOGIC_UNSIGNED.all;
 entity Microcomputer is
 	port(
 		n_reset		: in std_logic;
-		clk			: in std_logic;
+		clk33			: in std_logic;
 
 		sramData		: inout std_logic_vector(7 downto 0);
 		sramAddress	: out std_logic_vector(15 downto 0);
@@ -100,7 +100,8 @@ architecture struct of Microcomputer is
 	signal sdClkCount					: std_logic_vector(5 downto 0); 	
 	signal cpuClock					: std_logic;
 	signal serialClock				: std_logic;
-	signal sdClock						: std_logic;	
+	signal sdClock						: std_logic;
+	signal clk							: std_logic;
 	
 begin
 -- ____________________________________________________________________________________
@@ -167,7 +168,7 @@ port map(
 	n_dcd => '0',
 	n_rts => rts1
 );
-	
+
 -- ____________________________________________________________________________________
 -- MEMORY READ/WRITE LOGIC GOES HERE
 
@@ -198,6 +199,12 @@ cpuDataIn <=
 -- SYSTEM CLOCKS GO HERE
 
 -- SUB-CIRCUIT CLOCK SIGNALS
+
+pll: entity work.clk_wiz_v3_6 PORT MAP(
+		CLK_IN1 => clk33,
+		CLK_OUT1 => clk
+	);
+
 serialClock <= serialClkCount(15);
 process (clk)
 begin
