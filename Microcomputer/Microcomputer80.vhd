@@ -233,14 +233,18 @@ begin
 
 		-- Serial clock DDS
 		-- 50MHz master input clock:
+		-- OR INCREMENT = (BAUDRATE * 16 * 65526) / 50000000
 		-- Baud Increment
 		-- 115200 2416
+		-- 57600 1208
 		-- 38400 805
 		-- 19200 403
 		-- 9600 201
 		-- 4800 101
 		-- 2400 50
-		serialClkCount <= serialClkCount + 2416;
+		-- 1200 25
+		-- 300 6
+		serialClkCount <= serialClkCount + 6; -- 300 baud serial port
 	end if;
 end process;
 
