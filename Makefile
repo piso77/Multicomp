@@ -117,6 +117,7 @@ $(BITFILE): project.cfg $(VSOURCE) $(CONSTRAINTS) build/$(PROJECT).prj build/$(P
 	@mkdir -p build
 	$(call RUN,xst) $(COMMON_OPTS) \
 	    -ifn $(PROJECT).scr
+	$(foreach file,$(NGCSOURCE),cp $(file) build;)
 	$(call RUN,ngdbuild) $(COMMON_OPTS) $(NGDBUILD_OPTS) \
 	    -p $(TARGET_PART) -uc ../$(CONSTRAINTS) \
 	    $(PROJECT).ngc $(PROJECT).ngd
