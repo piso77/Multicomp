@@ -97,7 +97,7 @@ INIT:
                CALL      PRINT           ; Output string
 CORW:
                CALL      RXA
-               AND       %11011111       ; lower to uppercase
+               AND       11011111b       ; lower to uppercase
                CP        'C'
                JR        NZ, CHECKWARM
                RST       08H
