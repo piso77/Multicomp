@@ -1,8 +1,10 @@
-all: bootrom.asm
-	zmac bootrom.asm
-	hex_to_coe zout/bootrom.hex bootrom.tmp
-	tail -n+4 bootrom.tmp > bootrom.mem
+bootrom = z80UARTMonitor
+
+all: $(bootrom).asm
+	zasm -uxyw --z80 $(bootrom).asm -o $(bootrom).hex
+	hex_to_coe $(bootrom).hex $(bootrom).tmp
+	tail -n+4 $(bootrom).tmp > bootrom.mem
 	mv bootrom.mem ../../Multicomp80/
 
 clean:
-	rm -rf zout *.tmp *.mem
+	rm -f *.hex *.lst *.mem *.rom *.tmp
