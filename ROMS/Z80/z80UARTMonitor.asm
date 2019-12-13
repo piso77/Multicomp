@@ -1,3 +1,4 @@
+; https://github.com/fiskabollen/z80Monitor
 ;
 ; Simple monitor on UART
 ;
@@ -23,14 +24,21 @@
 ; 8000-FFFF 32K RAM
 
 
-UART_PORT	equ 80h	; The UART's data buffer for in/out
+;UART_PORT	equ 80h	; The UART's data buffer for in/out
+;UART_LSR	equ	85h	; Line Status Register (used for transmitter empty bit)
+
+UART_PORT	equ 81h	; The UART's data buffer for in/out
+UART_LSR	equ	80h	; Line Status Register (used for transmitter empty bit)
+
+
 UART_DLL	equ	80h	; LSB of divisor latch
 UART_DLM	equ 81h	; MSB of divisor latch (DLAB=1)
 UART_FCR	equ	82h	; FIFO control register
 UART_IER	equ	81h	; Interrupt Enable register (DLAB=0)
 UART_LCR	equ	83h	; Line Control Register
 UART_MCR	equ 84h	; Modem Control Register (for OUT1/OUT2)
-UART_LSR	equ	85h	; Line Status Register (used for transmitter empty bit)
+
+RTS_LOW		equ 95h
 
 UART_O1	equ	00000100b ; bit 2 is OUT1
 UART_O2	equ 00001000b ; bit 3 is OUT2
@@ -55,35 +63,12 @@ STACK		equ BUFFER-1	; then we have the stack
 
 init:
 	LD HL,0000h
-	
-; Set OUT2 indicator LED to off
-; This shows we have started at least
-	IN A,(UART_MCR)
-	OR UART_O2	
-	OUT (UART_MCR),A
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; INITIALISE THE UART
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Reset Divisor Latch Access Bit
-	LD A,0h
-	OUT (UART_LCR), A
-; Reset Interrupt Enable Register bits (we need FIFO polled mode)
-	OUT (UART_IER), A
-; Enable FIFO (buffer for in/out)
-	LD A, 00000001b	; bit 0 = enable FIFOs
-	OUT (UART_FCR), A
-; Set Divisor Latch Access Bit (to set baud rate)
-	LD A,10000000b	; bit 7 is DLAB
-	OUT (UART_LCR), A
-; Set divisor (38400 baud for 1.8432Mhz clock) = $03
-	LD A, 03h
-	OUT (UART_DLL), A	; DLL (LSB)
-	LD A, 00h
-	OUT (UART_DLM), A	; DLM (MSB)
-; Set 8N1   (DLE to 0)
-	LD A, 00000011b	; This is 8N1, plus clear DLA bit
-	OUT (UART_LCR), A
+;	CALL off2
+;	CALL inituart
+
+	LD A, RTS_LOW
+	OUT ($80), A	; Initialise ACIA
 
 start:
 ; Output the startup text
@@ -500,13 +485,39 @@ eeloop:	LD A, (HL)		; read the byte
 		POP BC
 		RET	
 		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; INITIALISE THE UART
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+inituart:
+; Reset Divisor Latch Access Bit
+	LD A,0h
+	OUT (UART_LCR), A
+; Reset Interrupt Enable Register bits (we need FIFO polled mode)
+	OUT (UART_IER), A
+; Enable FIFO (buffer for in/out)
+	LD A, 00000001b	; bit 0 = enable FIFOs
+	OUT (UART_FCR), A
+; Set Divisor Latch Access Bit (to set baud rate)
+	LD A,10000000b	; bit 7 is DLAB
+	OUT (UART_LCR), A
+; Set divisor (38400 baud for 1.8432Mhz clock) = $03
+	LD A, 03h
+	OUT (UART_DLL), A	; DLL (LSB)
+	LD A, 00h
+	OUT (UART_DLM), A	; DLM (MSB)
+; Set 8N1   (DLE to 0)
+	LD A, 00000011b	; This is 8N1, plus clear DLA bit
+	OUT (UART_LCR), A
+	RET
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Wait until UART has a byte, store it in A
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 inchar:
 		IN A, (UART_LSR)	; read LSR
-		BIT 0, A			; bit 0 is Data Ready
+		;BIT 0, A			; bit 0 is Data Ready
+		AND $01
+		CP $0
 		JP Z, inchar
 		IN A, (UART_PORT)
 		RET
@@ -517,7 +528,9 @@ inchar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 chkchar:
 		IN A, (UART_LSR)
-		BIT 0, A			; bit 0 is set when data present
+		;BIT 0, A			; bit 0 is set when data present
+		AND $01
+		CP $0
 		JP NZ, gotchar
 		LD A, $FF
 		RET
@@ -534,7 +547,8 @@ outchar:
 ; wait until transmitted
 oloop:	
 		IN A, (UART_LSR)	; read LSR
-		BIT 6, A	; bit 6 is transmitter empty
+		;BIT 6, A	; bit 6 is transmitter empty
+		BIT 1, A	; bit 1 is transmitter empty
 		JP Z, oloop
 		POP AF
 		RET
@@ -598,7 +612,13 @@ off1:
 		OUT (UART_MCR), A
 		POP AF
 		RET
-
+; Set OUT2 indicator LED to off
+; This shows we have started at least
+off2:
+	IN A,(UART_MCR)
+	OR UART_O2
+	OUT (UART_MCR),A
+	RET
 
 DATA:
 		DEFB	30h	; 0
