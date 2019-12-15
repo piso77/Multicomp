@@ -79,7 +79,7 @@ start:
 ; Output the current location [nnnn] bb (A)
 display:
 ; Turn on LED1 to show display loop
-	CALL on1		; turn on LED1 to show busy
+	;CALL on1		; turn on LED1 to show busy
 	CALL dispadd	; Display [nnnn]
 	LD A, ' '
 	CALL outchar
