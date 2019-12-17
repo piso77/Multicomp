@@ -70,18 +70,9 @@ CAN:	EQU	'X'-40h	; ^X = Cancel
 ;
 ; Start of code
 ;
-	ORG 0100h
-
-	ld	A,(2)	; High part of BIOS Warm Boot address
-	ld	(CONST+2),A	; Update jump target addressed
-	ld	(CONIN+2),A	; ...
-	ld	(CONOUT+2),A	; ...
-
-	ld	(oldSP),SP
-	ld	SP,stackend
-
-	ld	HL,msgHeader	; Print a greeting
-	call	PrintString0
+xmodemrecv:
+	ld	DE,msgHeader	; Print a greeting
+	call otext
 
 	ld	A,(DFCB+1)	; Check if we got a filename
 	cp	' '
@@ -198,39 +189,39 @@ Done:
 	call	CloseFile
 	ld	C,ACK		; Tell uploader we're done
 	call	CONOUT
-	ld 	HL,msgSucces1	; Print success message and filename
-	call	PrintString0
+	ld 	DE,msgSucces1	; Print success message and filename
+	call	otext
 	call	PrintFilename
-	ld 	HL,msgSucces2
-	call 	PrintString0
+	ld 	DE,msgSucces2
+	call 	otext
 	jp	Exit
 
 FailCreateFile:
-	ld	HL,msgFailCre
-	call	PrintString0
+	ld	DE,msgFailCre
+	call	otext
 	call	PrintFilename
 	ld	HL,msgCRLF
 	jp	Exit
 
 FailWrite:
-	ld	HL,msgFailWrt
+	ld	DE,msgFailWrt
 	jp	Die
 
 NoFileName:
-	ld 	HL,msgNoFile
-	call 	PrintString0
+	ld 	DE,msgNoFile
+	call 	otext
 	jp	Exit
 
 Failure:
-	ld 	HL,msgFailure
+	ld 	DE,msgFailure
 	jp	Die
 
 Cancelled:
-	ld 	HL,msgCancel
+	ld 	DE,msgCancel
 	jp	Die
 
 Die:
-	call 	PrintString0	; Prints message and exits from program
+	call 	otext	; Prints message and exits from program
 	call	CloseFile
 	call	DeleteFile
 Exit:
@@ -278,19 +269,6 @@ GotChar:
 	call	CONIN
 	or 	A 		; Clear Carry signals success
 	ret
-
-
-;
-; Print message pointed top HL until 0
-;
-PrintString0:
-	ld	A,(HL)
-	or	A		; Check if got zero?
-	ret	Z		; If zero return to caller
-	ld 	C,A
-	call	CONOUT		; else print the character
-	inc	HL
-	jp	PrintString0
 
 
 ;
