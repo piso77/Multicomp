@@ -788,3 +788,5 @@ smend:
 	JP display
 
 txt:	DEFM "Fin.",$0D,$0A,$80
+
+#include "xmodemrecv.asm"
