@@ -166,13 +166,7 @@ DeleteFile:
 	ld 	C,DELFILE	;
 	jp	BDOS		; Returns A=255 if error, but we don't care
 
-CloseFile:
-	ld  	DE,DFCB		; Close the file
-	ld 	C,CLOSEFIL
-	jp	BDOS
-
 Done:
-	call	CloseFile
 	ld	C,ACK		; Tell uploader we're done
 	call	CONOUT
 	ld 	DE,msgSucces1	; Print success message and filename
@@ -208,7 +202,6 @@ Cancelled:
 
 Die:
 	call 	otext	; Prints message and exits from program
-	call	CloseFile
 	call	DeleteFile
 Exit:
 	ld	SP,(oldSP)
