@@ -106,14 +106,29 @@ csloop:	add	A,(HL)		; Just add up the bytes
 	cp	C
 	jp	NZ,Failure
 
-	ld	DE,packet+3	; Reset DMA address to the packet data buff
-	ld 	C,PUTDMA
-	call	BDOS
-	ld  	DE,DFCB		; File Description Block
-	ld 	C,WRTSEQ
-	call	BDOS		; Returns A=0 if ok
-	cp	0
-	jp	NZ,FailWrite
+	; memcpy()
+	; INPUT: DE = src, HL = dst, BC = len
+	;
+	; mul() - multiple adds
+	; INPUT: THE VALUES IN REGISTER B EN C
+	; OUTPUT: HL = B * E
+	;
+	LD HL, 0
+	LD D, 0
+	LD E, 128
+	LD A, (pktNo)		; pktNo is always >= 1
+	LD B, A
+memcpyloop:
+	ADD HL,DE
+	DJNZ memcpyloop
+	; end of MUL
+	LD DE, 0x1000		; dummy dest ptr
+	ADD HL, DE			; HL = memcpy dst
+	LD DE, packet+3		; DE = memcpy src
+	LD B, 0
+	LD C, 128			; BC = memcpy len
+	LDIR
+	; done memcpy
 
 	ld	HL,pktNo	; Update the packet counters
 	inc 	(HL)
@@ -133,10 +148,6 @@ Done:
 	ld 	DE,msgSucces2
 	call 	otext
 	jp	Exit
-
-FailWrite:
-	ld	DE,msgFailWrt
-	jp	Die
 
 Failure:
 	ld 	DE,msgFailure
@@ -206,7 +217,6 @@ CONOUT:	jp	0ff0ch	; Write the character in C to the screen
 ; Message strings
 ;
 msgHeader: DB 	'CP/M XR - Xmodem receive v0.1 / SmallRoomLabs 2017',CR,LF,0
-msgFailWrt:DB	CR,LF,'Failed writing to disk',CR,LF,0
 msgFailure:DB	CR,LF,'Transmssion failed',CR,LF,0
 msgCancel: DB	CR,LF,'Transmission cancelled',CR,LF,0
 msgSucces1:DB	CR,LF,'File ',0
