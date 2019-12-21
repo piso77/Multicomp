@@ -7,11 +7,9 @@
 ;
 ;	Common entry points and locations
 ;
-BOOT:	EQU	0000h	; Warm boot/Reset vector
 BDOS:	EQU 	0005h	; BDOS function vector
 DFCB:	EQU	5CH	; Default File Control Block
 DFCBcr:	EQU 	DFCB+32 ; Current record
-dbuf:	EQU	0080h
 
 ;
 ; BDOS function codes
