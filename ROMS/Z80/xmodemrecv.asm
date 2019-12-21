@@ -72,18 +72,6 @@ xmodemrecv:
 	ld	DE,msgHeader	; Print a greeting
 	call otext
 
-	ld	A,(DFCB+1)	; Check if we got a filename
-	cp	' '
-	jp	Z,NoFileName
-
-	ld  	DE,DFCB		; Then create new file
-	ld 	A,0		; Start at block 0
-	ld	(DFCBcr),A
-	ld 	C,FCREATE
-	call	BDOS		; Returns A in 255 if error opening
-	inc 	A
-	jp	Z,FailCreateFile
-
 	ld 	A,1		; The first packet is number 1
 	ld 	(pktNo),A
 	ld 	A,255-1		; Also store the 1-complement of it
