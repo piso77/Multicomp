@@ -161,11 +161,6 @@ csloop:	add	A,(HL)		; Just add up the bytes
 	call	CONOUT		; packet and go back and fetch some more
 	jp	GetNewPacket
 
-DeleteFile:
-	ld  	DE,DFCB		; Delete file first
-	ld 	C,DELFILE	;
-	jp	BDOS		; Returns A=255 if error, but we don't care
-
 Done:
 	ld	C,ACK		; Tell uploader we're done
 	call	CONOUT
@@ -202,7 +197,6 @@ Cancelled:
 
 Die:
 	call 	otext	; Prints message and exits from program
-	call	DeleteFile
 Exit:
 	ld	SP,(oldSP)
 	ret
