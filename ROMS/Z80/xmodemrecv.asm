@@ -5,19 +5,6 @@
 ; Licensed under the MIT license
 ;*****************************************************************************
 ;
-;	Common entry points and locations
-;
-BDOS:	EQU 	0005h	; BDOS function vector
-DFCB:	EQU	5CH	; Default File Control Block
-DFCBcr:	EQU 	DFCB+32 ; Current record
-
-;
-; BDOS function codes
-;
-WRTSEQ:  EQU	21	; Write Sequential DE=FCBaddr A<status (00ok)
-PUTDMA:	 EQU	26	; Set DMA Address DE=addr
-
-;
 ; ASCII codes
 ;
 LF:	EQU	'J'-40h	; ^J LF
