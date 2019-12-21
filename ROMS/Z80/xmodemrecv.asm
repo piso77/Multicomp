@@ -129,7 +129,7 @@ Done:
 	call	CONOUT
 	ld 	DE,msgSucces1	; Print success message and filename
 	call	otext
-	call	PrintFilename
+	;call	PrintFilename - print file memory location? context? hash?
 	ld 	DE,msgSucces2
 	call 	otext
 	jp	Exit
@@ -194,45 +194,6 @@ GotChar:
 	or 	A 		; Clear Carry signals success
 	ret
 
-
-;
-; Prints the 'B' bytes long string pointed to by HL, but no spaces
-;
-PrintNoSpaceB:
-	push	BC
-	ld	A,(HL)		; Get character pointed to by HL
-	ld	C,A
-	cp	' '		; Don't print spaces
-	call	NZ,CONOUT
-	pop	BC
-	inc	HL		; Advance to next character
-	djnz	PrintNoSpaceB	; Loop until B=0
-	ret
-;
-;
-;
-PrintFilename:
-	ld	A,(DFCB)	; Print the drive
-	or	A		; If Default drive,then...
-	jp	Z,PFnoDrive	; ...don't print the drive name
-	add	A,'@'		; The drives are numbered 1-16...
-	ld	C,A		; ...so we need to offset to get A..P
-	call	CONOUT
-
-	ld	C,':'		; Print colon after the drive name
-	call	CONOUT
-
-PFnoDrive:
-	ld	HL,DFCB+1	; Start of filename in File Control Block
-	ld	B,8		; First part is 8 characters
-	call	PrintNoSpaceB
-
-	ld	C,'.'		; Print the dot between filname & extension
-	call	CONOUT
-
-	ld 	B,3		; Then print the extension
-	call	PrintNoSpaceB
-	ret
 
 ;
 ; BIOS jump table vectors to be patched
