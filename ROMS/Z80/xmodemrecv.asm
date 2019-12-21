@@ -134,21 +134,9 @@ Done:
 	call 	otext
 	jp	Exit
 
-FailCreateFile:
-	ld	DE,msgFailCre
-	call	otext
-	call	PrintFilename
-	ld	HL,msgCRLF
-	jp	Exit
-
 FailWrite:
 	ld	DE,msgFailWrt
 	jp	Die
-
-NoFileName:
-	ld 	DE,msgNoFile
-	call 	otext
-	jp	Exit
 
 Failure:
 	ld 	DE,msgFailure
