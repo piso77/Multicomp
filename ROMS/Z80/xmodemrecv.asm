@@ -221,9 +221,6 @@ msgFailure:DB	CR,LF,'Transmssion failed',CR,LF,0
 msgCancel: DB	CR,LF,'Transmission cancelled',CR,LF,0
 msgSucces1:DB	CR,LF,'File ',0
 msgSucces2:DB	' received successfully',CR,LF,0
-msgFailCre:DB	'Failed creating file named ',0
-msgNoFile: DB	'Filename expeced',CR,LF,0
-msgCRLF:   DB	CR,LF,0
 
 ;
 ; Variables
