@@ -188,7 +188,7 @@ GotChar:
 	pop	BC
 	pop	BC
 	pop	BC
-	call	CONIN
+	call	inchar
 	or 	A 		; Clear Carry signals success
 	ret
 
@@ -196,7 +196,6 @@ GotChar:
 ;
 ; BIOS jump table vectors to be patched
 ;
-CONIN:	jp	0ff09h	; Wait until character ready available and return in A
 CONOUT:	jp	0ff0ch	; Write the character in C to the screen
 
 ;
