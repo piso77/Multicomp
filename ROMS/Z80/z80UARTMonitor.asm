@@ -129,6 +129,8 @@ L2:	CP 'h'			; h: show help then display
 	JP Z, typemem
 	CP 'X'			; X: execute from current
 	JP Z, exec
+	CP 'x'			; x: xmodem receive
+	JP Z, xmodemrecv
 	CP 30h			; test for hex digit
 	JP C, notdig	; < $30
 	CP 47h			
@@ -648,6 +650,7 @@ TEXT0:
 	DEFM	"d: dump at address (any key ends)",$0A,$0D
 	DEFM	"S: set at address (<ent>:set+inc <esc>:end)",$0A,$0D
 	DEFM	"X: exec address (caution!)",$0A,$0D
+	DEFM	"x: XModem receive at 0x2000",$0A,$0D
 	DEFM	"c: copy... (length=0 to abort)",$0A,$0D
 	DEFM	"k: bulk set...",$0A,$0D
 	DEFM	"t: type ascii to mem...",$0A,$0D
