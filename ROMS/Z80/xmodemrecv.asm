@@ -196,11 +196,11 @@ GotChar:
 ;
 ; Message strings
 ;
-msgHeader: DB 	'CP/M XR - Xmodem receive v0.1 / SmallRoomLabs 2017',CR,LF,0
-msgFailure:DB	CR,LF,'Transmssion failed',CR,LF,0
-msgCancel: DB	CR,LF,'Transmission cancelled',CR,LF,0
-msgSucces1:DB	CR,LF,'File ',0
-msgSucces2:DB	' received successfully',CR,LF,0
+msgHeader: DB 	'CP/M XR - Xmodem receive v0.1 / SmallRoomLabs 2017',CR,LF,$80
+msgFailure:DB	CR,LF,'Transmssion failed',CR,LF,$80
+msgCancel: DB	CR,LF,'Transmission cancelled',CR,LF,$80
+msgSucces1:DB	CR,LF,'File ',$80
+msgSucces2:DB	' received successfully',CR,LF,$80
 
 ;
 ; Variables
