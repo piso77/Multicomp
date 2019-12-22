@@ -244,7 +244,7 @@ begin
 		-- 2400 50
 		-- 1200 25
 		-- 300 6
-		serialClkCount <= serialClkCount + 6; -- 300 baud serial port
+		serialClkCount <= serialClkCount + 201;
 	end if;
 end process;
 
