@@ -109,7 +109,7 @@ memcpyloop:
 	ADD HL,DE
 	DJNZ memcpyloop
 	; end of MUL
-	LD DE, 0x1000		; dummy dest ptr
+	LD DE, 0x2000		; dummy dest ptr
 	ADD HL, DE			; HL = memcpy dst
 	LD DE, packet+3		; DE = memcpy src
 	LD B, 0
