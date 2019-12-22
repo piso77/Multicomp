@@ -166,8 +166,8 @@ GCtmob:
 	ld	B,255
 GCtmoc:
 	push	BC
-	call	CONST
-	cp	00h		; A char available?
+	call	chkchar
+	cp	0xFF		; A char available?
 	jp 	NZ,GotChar	; Yes, get out of loop
 	ld	HL,(0)		; Waste some cycles
 	ld	HL,(0)		; ...
@@ -196,7 +196,6 @@ GotChar:
 ;
 ; BIOS jump table vectors to be patched
 ;
-CONST:	jp 	0ff06h	; A=0 if no character is ready, 0FFh if one is
 CONIN:	jp	0ff09h	; Wait until character ready available and return in A
 CONOUT:	jp	0ff0ch	; Write the character in C to the screen
 
