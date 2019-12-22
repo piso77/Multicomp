@@ -40,8 +40,8 @@ NPloop:
 	dec 	(HL)
 	jp 	Z,Failure	; Yes, print message and exit
 
-	ld 	C,NAK		; Send a NAK to the uploader
-	call	CONOUT
+	ld 	A,NAK		; Send a NAK to the uploader
+	call	outchar
 	jp 	NPloop
 
 NotPacketTimeout:
@@ -122,13 +122,13 @@ memcpyloop:
 	ld	HL,pktNo1c
 	dec	(HL)
 
-	ld 	C,ACK		; Tell uploader that we're happy with with
-	call	CONOUT		; packet and go back and fetch some more
+	ld 	A,ACK		; Tell uploader that we're happy with with
+	call	outchar		; packet and go back and fetch some more
 	jp	GetNewPacket
 
 Done:
-	ld	C,ACK		; Tell uploader we're done
-	call	CONOUT
+	ld	A,ACK		; Tell uploader we're done
+	call	outchar
 	ld 	DE,msgSucces1	; Print success message and filename
 	call	otext
 	;call	PrintFilename - print file memory location? context? hash?
@@ -192,11 +192,6 @@ GotChar:
 	or 	A 		; Clear Carry signals success
 	ret
 
-
-;
-; BIOS jump table vectors to be patched
-;
-CONOUT:	jp	0ff0ch	; Write the character in C to the screen
 
 ;
 ; Message strings
