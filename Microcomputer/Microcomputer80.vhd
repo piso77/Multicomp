@@ -3,7 +3,7 @@
 -- acknowledgement.
 -- Please ask permission from Grant Searle before republishing elsewhere.
 -- If you use this file or any part of it, please add an acknowledgement to myself and
--- a link back to my main web site http://searle.hostei.com/grant/    
+-- a link back to my main web site http://searle.hostei.com/grant/
 -- and to the "multicomp" page at http://searle.hostei.com/grant/Multicomp/index.html
 --
 -- Please check on the above web pages to see if there are any updates before using this file.
@@ -28,7 +28,7 @@ entity Microcomputer is
 		n_sRamWE		: out std_logic;
 		n_sRamCS		: out std_logic;
 		n_sRamOE		: out std_logic;
-		
+
 		rxd1			: in std_logic;
 		txd1			: out std_logic;
 		rts1			: out std_logic;
@@ -36,7 +36,7 @@ entity Microcomputer is
 		rxd2			: in std_logic;
 		txd2			: out std_logic;
 		rts2			: out std_logic;
-		
+
 		videoSync	: out std_logic;
 		video			: out std_logic;
 
@@ -56,7 +56,7 @@ entity Microcomputer is
 		sdMOSI		: out std_logic;
 		sdMISO		: in std_logic;
 		sdSCLK		: out std_logic;
-		driveLED		: out std_logic :='1'	
+		driveLED		: out std_logic :='1'
 	);
 end Microcomputer;
 
@@ -80,13 +80,13 @@ architecture struct of Microcomputer is
 
 	signal n_ioWR						: std_logic :='1';
 	signal n_ioRD 						: std_logic :='1';
-	
-	signal n_MREQ						: std_logic :='1';
-	signal n_IORQ						: std_logic :='1';	
 
-	signal n_int1						: std_logic :='1';	
-	signal n_int2						: std_logic :='1';	
-	
+	signal n_MREQ						: std_logic :='1';
+	signal n_IORQ						: std_logic :='1';
+
+	signal n_int1						: std_logic :='1';
+	signal n_int2						: std_logic :='1';
+
 	signal n_externalRamCS			: std_logic :='1';
 	signal n_internalRam1CS			: std_logic :='1';
 	signal n_internalRam2CS			: std_logic :='1';
@@ -96,13 +96,13 @@ architecture struct of Microcomputer is
 	signal n_sdCardCS					: std_logic :='1';
 
 	signal serialClkCount			: std_logic_vector(15 downto 0);
-	signal cpuClkCount				: std_logic_vector(5 downto 0); 
-	signal sdClkCount					: std_logic_vector(5 downto 0); 	
+	signal cpuClkCount				: std_logic_vector(5 downto 0);
+	signal sdClkCount					: std_logic_vector(5 downto 0);
 	signal cpuClock					: std_logic;
 	signal serialClock				: std_logic;
 	signal sdClock						: std_logic;
 	signal clk							: std_logic;
-	
+
 begin
 -- ____________________________________________________________________________________
 -- CPU CHOICE GOES HERE
@@ -126,7 +126,7 @@ port map(
 );
 
 -- ____________________________________________________________________________________
--- ROM GOES HERE	
+-- ROM GOES HERE
 
 rom1 : entity work.Z80_BASIC_ROM -- 8KB BASIC
 port map(
@@ -134,7 +134,7 @@ port map(
 	clka => clk,
 	douta => basRomData
 );
-	
+
 -- ____________________________________________________________________________________
 -- RAM GOES HERE
 
@@ -149,7 +149,7 @@ port map
 );
 
 -- ____________________________________________________________________________________
--- INPUT/OUTPUT DEVICES GO HERE	
+-- INPUT/OUTPUT DEVICES GO HERE
 
 io1 : entity work.bufferedUART
 port map(
