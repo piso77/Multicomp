@@ -147,7 +147,6 @@ Cancelled:
 Die:
 	call 	otext	; Prints message and exits from program
 Exit:
-	ld	SP,(oldSP)
 	ret
 
 
@@ -202,21 +201,4 @@ msgCancel: DB	$0A,$0D,'Transmission cancelled',$0A,$0D,$80
 msgSucces1:DB	$0A,$0D,'File ',$80
 msgSucces2:DB	' received successfully',$0A,$0D,$80
 
-;
-; Variables
-;
-oldSP:	 DS	2	; The orginal SP to be restored before exiting
-retrycnt:DS 	1	; Counter for retries before giving up
-chksum:	 DS	1	; For claculating the ckecksum of the packet
-pktNo:	 DS 	1 	; Current packet Number
-pktNo1c: DS 	1 	; Current packet Number 1-complemented
-packet:	 DS 	1	; SOH
-	 DS	1	; PacketN
-	 DS	1	; -PacketNo,
-	 DS	128	; data*128,
-	 DS	1 	; chksum
-
-stack:	 DS 	256
-stackend: EQU $
-
-	END
+END

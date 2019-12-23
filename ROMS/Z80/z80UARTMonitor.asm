@@ -55,7 +55,17 @@ RAMTOP		equ	$2FFF	;	RAM ends at $2FFF
 TEMP		equ RAMTOP	; 	Temporary storage byte
 KDATA1		equ TEMP-1	;	keyed input for addresses
 KDATA2		equ KDATA1-1
-BUFFER		equ	KDATA2-256	; for building strings - 256 bytes
+retrycnt	equ KDATA2-1	; Counter for retries before giving up
+chksum		equ retrycnt-1	; For claculating the ckecksum of the packet
+pktNo		equ chksum-1	; Current packet Number
+pktNo1c		equ pktNo-1		; Current packet Number 1-complemented
+packet		equ pktNo1c-132
+;	 DS 1				; SOH
+;	 DS	1				; PacketN
+;	 DS	1				; -PacketNo,
+;	 DS	128				; data*128,
+;	 DS	1				; chksum
+BUFFER		equ	packet-256	; for building strings - 256 bytes
 STACK		equ BUFFER-1	; then we have the stack
 	
 	org 0
