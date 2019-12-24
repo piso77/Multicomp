@@ -7,13 +7,11 @@
 ;
 ; ASCII codes
 ;
-LF:	EQU	'J'-40h	; ^J LF
-CR: 	EQU 	'M'-40h	; ^M CR/ENTER
-SOH:	EQU	'A'-40h	; ^A CTRL-A
-EOT:	EQU	'D'-40h	; ^D = End of Transmission
-ACK:	EQU	'F'-40h	; ^F = Positive Acknowledgement
-NAK:	EQU	'U'-40h	; ^U = Negative Acknowledgement
-CAN:	EQU	'X'-40h	; ^X = Cancel
+SOH	EQU	0x01	; ^A CTRL-A
+EOT	EQU	0x04	; ^D = End of Transmission
+ACK	EQU	0x06	; ^F = Positive Acknowledgement
+NAK	EQU	0x15	; ^U = Negative Acknowledgement
+CAN	EQU	0x18	; ^X = Cancel
 
 ;
 ; Start of code
