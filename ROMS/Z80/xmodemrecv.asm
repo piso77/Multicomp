@@ -17,6 +17,12 @@ CAN	EQU	0x18	; ^X = Cancel
 ; Start of code
 ;
 xmodemrecv:
+	ld IX, STORAGE+511
+	ld A, '$'
+	call stamp
+	ld IX, STORAGE
+	ld A, '^'
+	call stamp
 	ld	DE,msgHeader	; Print a greeting
 	call otext
 
@@ -127,6 +133,8 @@ memcpyloop:
 Done:
 	ld	A,ACK		; Tell uploader we're done
 	call	outchar
+	ld A, '#'
+	call stamp
 	ld 	DE,msgSucces1	; Print success message and filename
 	call	otext
 	;call	PrintFilename - print file memory location? context? hash?
@@ -135,10 +143,14 @@ Done:
 	jp	Exit
 
 Failure:
+	ld A, '!'
+	call stamp
 	ld 	DE,msgFailure
 	jp	Die
 
 Cancelled:
+	ld A, '?'
+	call stamp
 	ld 	DE,msgCancel
 	jp	Die
 
@@ -189,6 +201,10 @@ GotChar:
 	or 	A 		; Clear Carry signals success
 	ret
 
+stamp:
+	ld (IX), A
+	inc IX
+	ret
 
 ;
 ; Message strings

@@ -51,7 +51,8 @@ A_ESC		equ 1Bh
 A_DEL		equ 7Fh
 
 ;RAMTOP		equ	$FFFF	;	RAM ends at $FFFF
-RAMTOP		equ	$2FFF	;	RAM ends at $2FFF
+STORAGE		equ	$2E00	; debug storage area
+RAMTOP		equ	$2DFF	;	RAM ends at $2FFF
 TEMP		equ RAMTOP	; 	Temporary storage byte
 KDATA1		equ TEMP-1	;	keyed input for addresses
 KDATA2		equ KDATA1-1
