@@ -60,7 +60,9 @@ retrycnt	equ KDATA2-1	; Counter for retries before giving up
 chksum		equ retrycnt-1	; For claculating the ckecksum of the packet
 pktNo		equ chksum-1	; Current packet Number
 pktNo1c		equ pktNo-1		; Current packet Number 1-complemented
-packet		equ pktNo1c-132
+charNoH		equ pktNo1c-1		; Current packet Number 1-complemented
+charNoL		equ charNoH-1		; Current packet Number 1-complemented
+packet		equ charNoL-132
 ;	 DS 1				; SOH
 ;	 DS	1				; PacketN
 ;	 DS	1				; -PacketNo,

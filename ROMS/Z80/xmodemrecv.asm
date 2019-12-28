@@ -17,6 +17,10 @@ CAN	EQU	0x18	; ^X = Cancel
 ; Start of code
 ;
 xmodemrecv:
+	ld A, 0
+	ld (charNoL), A
+	ld A, 0x9D
+	ld (charNoH), A
 	ld IX, STORAGE+511
 	ld A, '$'
 	call stamp
@@ -197,6 +201,14 @@ GotChar:
 	pop	BC
 	pop	BC
 	pop	BC
+	or a
+	ld	HL, charNoL
+	inc 	(HL)
+	jp nc,foobar
+	ld	HL, charNoH
+	inc 	(HL)
+	or a
+foobar:
 	call	inchar
 	or 	A 		; Clear Carry signals success
 	ret
