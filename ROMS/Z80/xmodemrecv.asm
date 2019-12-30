@@ -46,7 +46,7 @@ NPloop:
 
 	ld	HL,retrycnt	; Reached max number of retries?
 	dec 	(HL)
-	jp 	Z,Failure	; Yes, print message and exit
+	jp 	Z,Failure1	; Yes, print message and exit
 
 	ld 	A,NAK		; Send a NAK to the uploader
 	call	outchar
@@ -87,19 +87,19 @@ csloop:	add	A,(HL)		; Just add up the bytes
 	djnz	csloop
 
 	xor	(HL)		; HL points to the received checksum so
-	jp	NZ,Failure	; by xoring it to our sum we check for equality
+	jp	NZ,Failure2	; by xoring it to our sum we check for equality
 
 	ld	A,(pktNo)	; Check if agreement of packet numbers
 	ld	C,A
 	ld	A,(packet+1)
 	cp	C
-	jp	NZ,Failure
+	jp	NZ,Failure3
 
 	ld	A,(pktNo1c)	; Check if agreement of 1-compl packet numbers
 	ld	C,A
 	ld	A,(packet+2)
 	cp	C
-	jp	NZ,Failure
+	jp	NZ,Failure4
 
 	; memcpy()
 	; INPUT: DE = src, HL = dst, BC = len
@@ -146,10 +146,20 @@ Done:
 	call 	otext
 	jp	Exit
 
-Failure:
-	ld A, '!'
-	call stamp
-	ld 	DE,msgFailure
+Failure1:
+	ld 	DE,msgFailure1
+	jp	Die
+
+Failure2:
+	ld 	DE,msgFailure2
+	jp	Die
+
+Failure3:
+	ld 	DE,msgFailure3
+	jp	Die
+
+Failure4:
+	ld 	DE,msgFailure4
 	jp	Die
 
 Cancelled:
@@ -222,7 +232,10 @@ stamp:
 ; Message strings
 ;
 msgHeader: DB 	'CP/M XR - Xmodem receive v0.1 / SmallRoomLabs 2017',$0A,$0D,$80
-msgFailure:DB	$0A,$0D,'Transmssion failed',$0A,$0D,$80
+msgFailure1:DB	$0A,$0D,'Transmssion failed1',$0A,$0D,$80
+msgFailure2:DB	$0A,$0D,'Transmssion failed2',$0A,$0D,$80
+msgFailure3:DB	$0A,$0D,'Transmssion failed3',$0A,$0D,$80
+msgFailure4:DB	$0A,$0D,'Transmssion failed4',$0A,$0D,$80
 msgCancel: DB	$0A,$0D,'Transmission cancelled',$0A,$0D,$80
 msgSucces1:DB	$0A,$0D,'File ',$80
 msgSucces2:DB	' received successfully',$0A,$0D,$80
