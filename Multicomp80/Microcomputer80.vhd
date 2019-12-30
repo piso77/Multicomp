@@ -23,11 +23,11 @@ entity Microcomputer is
 		n_reset		: in std_logic;
 		clk33			: in std_logic;
 
-		sramData		: inout std_logic_vector(7 downto 0);
-		sramAddress	: out std_logic_vector(15 downto 0);
-		n_sRamWE		: out std_logic;
-		n_sRamCS		: out std_logic;
-		n_sRamOE		: out std_logic;
+		sram_data		: inout std_logic_vector(7 downto 0);
+		sram_addr		: out std_logic_vector(15 downto 0);
+		sram_we		: out std_logic;
+		sram_ce		: out std_logic;
+		sram_oe		: out std_logic;
 
 		rxd1			: in std_logic;
 		txd1			: out std_logic;
@@ -140,15 +140,11 @@ port map(
 -- ____________________________________________________________________________________
 -- RAM GOES HERE
 
-ram1: entity work.InternalRam4K
-port map
-(
-	address => cpuAddress(11 downto 0),
-	clock => clk,
-	data => cpuDataOut,
-	wren => not(n_memWR or n_internalRam1CS),
-	q => internalRam1DataOut
-);
+sram_addr(15 downto 0) <= cpuAddress(15 downto 0);
+sram_data <= cpuDataOut when n_memWR='0' else (others => 'Z');
+sram_we <= n_memWR or n_externalRamCS;
+sram_oe <= n_memRD or n_externalRamCS;
+sram_ce <= n_externalRamCS;
 
 -- ____________________________________________________________________________________
 -- INPUT/OUTPUT DEVICES GO HERE
@@ -197,12 +193,11 @@ n_memRD <= n_RD or n_MREQ;
 -- CHIP SELECTS GO HERE
 
 n_basRomCS <= '0' when cpuAddress(15 downto 13) = "000" else '1'; --8K at bottom of memory
-n_internalRam1CS <= '0' when cpuAddress(15 downto 12) = "0010" else '1';
-
 n_interface1CS <= '0' when cpuAddress(7 downto 1) = "1000000" and (n_ioWR='0' or
 					n_ioRD = '0') else '1'; -- 2 Bytes $80-$81
 mapperCS <= '1' when cpuAddress(7 downto 4) = "1001" and (n_ioWR='0' or
 					n_ioRD = '0') else '0'; -- 16 Bytes $90-$9F
+n_externalRamCS<= not n_basRomCS;
 
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
@@ -210,8 +205,8 @@ mapperCS <= '1' when cpuAddress(7 downto 4) = "1001" and (n_ioWR='0' or
 cpuDataIn <=
 	interface1DataOut when n_interface1CS = '0' else
 	basRomData when n_basRomCS = '0' else
-	internalRam1DataOut when n_internalRam1CS= '0' else
 	mapperDataOut when mapperCS='1' else
+	sram_data when n_externalRamCS= '0' else
 	x"FF";
 
 -- ____________________________________________________________________________________
