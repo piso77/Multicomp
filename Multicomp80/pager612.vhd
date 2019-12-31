@@ -53,7 +53,7 @@ begin
 
 	-- read paging register / READ MODE
 	dbus_out <=
-		regs(to_integer(unsigned(abus_low(3 downto 0)))) when access_regs = '1' and page_reg_read = '1' and else
+		regs(to_integer(unsigned(abus_low(3 downto 0)))) when access_regs = '1' and page_reg_read = '1' else
 		x"BEEF";
 
 	-- mapping mode / MAP MODE
