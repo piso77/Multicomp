@@ -73,6 +73,7 @@ architecture struct of Microcomputer is
 	signal internalRam2DataOut		: std_logic_vector(7 downto 0);
 	signal interface1DataOut		: std_logic_vector(7 downto 0);
 	signal interface2DataOut		: std_logic_vector(7 downto 0);
+	signal mapperDataOut			: std_logic_vector(7 downto 0);
 	signal sdCardDataOut				: std_logic_vector(7 downto 0);
 
 	signal n_memWR						: std_logic :='1';
@@ -93,6 +94,7 @@ architecture struct of Microcomputer is
 	signal n_basRomCS					: std_logic :='1';
 	signal n_interface1CS			: std_logic :='1';
 	signal n_interface2CS			: std_logic :='1';
+	signal mapperCS					: std_logic :='0';
 	signal n_sdCardCS					: std_logic :='1';
 
 	signal serialClkCount			: std_logic_vector(15 downto 0);
@@ -169,6 +171,20 @@ port map(
 	n_rts => rts1
 );
 
+mapper: entity work.pager612
+port map(
+	clk => clk,
+	access_regs => mapperCS,
+	write_enable => not n_ioWR,
+	page_reg_read => not n_ioRD,
+	mapen => '0',
+	abus_high => cpuAddress(15 downto 12),
+	abus_low => cpuAddress(3 downto 0),
+	dbus_in => cpuDataOut & x"00"
+--	dbus_out => x"0000",
+--	translated_addr => x"0000"
+);
+
 -- ____________________________________________________________________________________
 -- MEMORY READ/WRITE LOGIC GOES HERE
 
@@ -181,10 +197,12 @@ n_memRD <= n_RD or n_MREQ;
 -- CHIP SELECTS GO HERE
 
 n_basRomCS <= '0' when cpuAddress(15 downto 13) = "000" else '1'; --8K at bottom of memory
+n_internalRam1CS <= '0' when cpuAddress(15 downto 12) = "0010" else '1';
+
 n_interface1CS <= '0' when cpuAddress(7 downto 1) = "1000000" and (n_ioWR='0' or
 					n_ioRD = '0') else '1'; -- 2 Bytes $80-$81
-
-n_internalRam1CS <= '0' when cpuAddress(15 downto 12) = "0010" else '1';
+mapperCS <= '1' when cpuAddress(7 downto 2) = "100001" and (n_ioWR='0' or
+					n_ioRD = '0') else '0'; -- 4 Bytes $84-$87
 
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
