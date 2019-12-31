@@ -51,12 +51,15 @@ begin
 		end if;
 	end process;
 
-	translated_addr <= 
-		regs(to_integer(unsigned(abus_high(15 downto 12)))) when mapen = '1' and access_regs = '0' else -- MAP MODE
-		x"000" & abus_high(15 downto 12);	-- mapping off / PASS MODE?
-	
+	-- read paging register / READ MODE
 	dbus_out <=
-		regs(to_integer(unsigned(abus_low(3 downto 0)))) when page_reg_read = '1' and access_regs = '1' else -- READ MODE
+		regs(to_integer(unsigned(abus_low(3 downto 0)))) when access_regs = '1' and page_reg_read = '1' and else
 		x"BEEF";
+
+	-- mapping mode
+	translated_addr <=
+		regs(to_integer(unsigned(abus_high(15 downto 12)))) when access_regs = '0' and mapen = '1' else
+		x"000" & abus_high(15 downto 12);
+
 end Behavioral;
 
