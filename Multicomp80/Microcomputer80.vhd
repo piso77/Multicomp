@@ -177,11 +177,11 @@ port map(
 	access_regs => mapperCS,
 	write_enable => not n_ioWR,
 	page_reg_read => not n_ioRD,
-	mapen => '0',
-	abus_high => cpuAddress(15 downto 12),
+	mapen => not n_basRomCS,
+	abus_high => '0' & cpuAddress(15 downto 13),
 	abus_low => cpuAddress(3 downto 0),
-	dbus_in => cpuDataOut & x"00"
---	dbus_out => x"0000",
+	dbus_in => cpuDataOut,
+	dbus_out => mapperDataOut
 --	translated_addr => x"0000"
 );
 
@@ -201,8 +201,8 @@ n_internalRam1CS <= '0' when cpuAddress(15 downto 12) = "0010" else '1';
 
 n_interface1CS <= '0' when cpuAddress(7 downto 1) = "1000000" and (n_ioWR='0' or
 					n_ioRD = '0') else '1'; -- 2 Bytes $80-$81
-mapperCS <= '1' when cpuAddress(7 downto 2) = "100001" and (n_ioWR='0' or
-					n_ioRD = '0') else '0'; -- 4 Bytes $84-$87
+mapperCS <= '1' when cpuAddress(7 downto 4) = "1001" and (n_ioWR='0' or
+					n_ioRD = '0') else '0'; -- 16 Bytes $90-$9F
 
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
@@ -211,6 +211,7 @@ cpuDataIn <=
 	interface1DataOut when n_interface1CS = '0' else
 	basRomData when n_basRomCS = '0' else
 	internalRam1DataOut when n_internalRam1CS= '0' else
+	mapperDataOut when mapperCS='1' else
 	x"FF";
 
 -- ____________________________________________________________________________________
