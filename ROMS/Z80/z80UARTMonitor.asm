@@ -129,6 +129,10 @@ L2:	CP 'h'			; h: show help then display
 	JP Z, typemem
 	CP 'X'			; X: execute from current
 	JP Z, exec
+	CP 'I'			; I: IO input
+	JP Z, inport
+	CP 'O'			; O: IO output
+	JP Z, outport
 	CP 30h			; test for hex digit
 	JP C, notdig	; < $30
 	CP 47h			
@@ -170,7 +174,7 @@ set:
 setend:
 	INC HL			; else next address and loops
 	JP set
-	
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; EXECUTE
 ;;    execute from HL
@@ -510,7 +514,64 @@ inituart:
 	LD A, 00000011b	; This is 8N1, plus clear DLA bit
 	OUT (UART_LCR), A
 	RET
-		
+
+inport:
+	ld DE, INIOTXT
+	call otext
+	CALL inchar
+	CALL outchar	; echo the character
+	CALL ATOHEX		; convert to binary
+	SLA A
+	SLA A
+	SLA A
+	SLA A
+	LD B, A
+	CALL inchar
+	CALL outchar
+	CALL ATOHEX
+	OR B
+	LD C, A
+	ld DE, IOTXT
+	call otext
+	IN A, (C)
+	call hexout
+	CALL OUTCRLF
+	jp display
+
+outport:
+	ld DE, OUTIOTXT
+	call otext
+	CALL inchar
+	CALL outchar	; echo the character
+	CALL ATOHEX		; convert to binary
+	SLA A
+	SLA A
+	SLA A
+	SLA A
+	LD B, A
+	CALL inchar
+	CALL outchar
+	CALL ATOHEX
+	OR B
+	LD C, A
+	ld DE, IOTXT
+	call otext
+	CALL inchar
+	CALL outchar	; echo the character
+	CALL ATOHEX		; convert to binary
+	SLA A
+	SLA A
+	SLA A
+	SLA A
+	LD B, A
+	CALL inchar
+	CALL outchar
+	CALL ATOHEX
+	OR B
+	OUT (C), A
+	CALL OUTCRLF
+	jp display
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Wait until UART has a byte, store it in A
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -646,6 +707,8 @@ TEXT0:
 	DEFM	"<ent>: inc address, <bs>:dec address",$0A,$0D
 	DEFM	"l: list+inc 16",$0A,$0D
 	DEFM	"d: dump at address (any key ends)",$0A,$0D
+	DEFM	"I: Read IO port",$0A,$0D
+	DEFM	"O: Write IO port",$0A,$0D
 	DEFM	"S: set at address (<ent>:set+inc <esc>:end)",$0A,$0D
 	DEFM	"X: exec address (caution!)",$0A,$0D
 	DEFM	"c: copy... (length=0 to abort)",$0A,$0D
@@ -669,7 +732,13 @@ CPTXT3:
 
 DONETXT:
 	DEFM	"Done.",$0A,$0D,$80
-	
+
+INIOTXT:
+	DEFM	"Read from IO port 0x",$80
+OUTIOTXT:
+	DEFM	"Write to IO port 0x",$80
+IOTXT:
+	DEFM	": 0x",$80
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Additional routines
