@@ -25,20 +25,20 @@ use IEEE.NUMERIC_STD.ALL;
 entity pager612 is
 	Port (
 			clk 			: in  STD_LOGIC;
-			mapen 			: in  STD_LOGIC;				-- 1 = enable mapping / MM
+			abus_high		: in  STD_LOGIC_VECTOR (15 downto 12);
+			abus_low		: in  STD_LOGIC_VECTOR (3 downto 0);
 			access_regs		: in  STD_LOGIC;				-- 1 = read/write registers / CS
 			write_enable	: in  STD_LOGIC;				-- 1 = write to register
 			page_reg_read	: in  STD_LOGIC;				-- 1 = read from register
-			abus_high		: in  STD_LOGIC_VECTOR (15 downto 12);
-			abus_low		: in  STD_LOGIC_VECTOR (3 downto 0);
-			dbus_in 		: in  STD_LOGIC_VECTOR (15 downto 0);
-			dbus_out 		: out  STD_LOGIC_VECTOR (15 downto 0);
-			translated_addr : out  STD_LOGIC_VECTOR (15 downto 0)
+			dbus_in 		: in  STD_LOGIC_VECTOR (7 downto 0);
+			dbus_out 		: out  STD_LOGIC_VECTOR (7 downto 0);
+			mapen 			: in  STD_LOGIC;				-- 1 = enable mapping / MM
+			translated_addr : out  STD_LOGIC_VECTOR (7 downto 0)
 		);
 end pager612;
 
 architecture Behavioral of pager612 is
-	type abank is array (natural range 0 to 15) of std_logic_vector(15 downto 0);
+	type abank is array (natural range 0 to 15) of std_logic_vector(7 downto 0);
 	signal regs   : abank;
 begin
 	process(clk)
@@ -54,11 +54,11 @@ begin
 	-- read paging register / READ MODE
 	dbus_out <=
 		regs(to_integer(unsigned(abus_low(3 downto 0)))) when access_regs = '1' and page_reg_read = '1' else
-		x"BEEF";
+		x"BF";
 
 	-- mapping mode / MAP MODE
 	translated_addr <=
 		regs(to_integer(unsigned(abus_high(15 downto 12)))) when access_regs = '0' and mapen = '1' else
-		x"000" & abus_high(15 downto 12);
+		x"0" & abus_high(15 downto 12);
 
 end Behavioral;
