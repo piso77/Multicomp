@@ -52,8 +52,7 @@ A_FF		equ	0Ch
 A_ESC		equ 1Bh
 A_DEL		equ 7Fh
 
-;RAMTOP		equ	$FFFF	;	RAM ends at $FFFF
-RAMTOP		equ	$2FFF	;	RAM ends at $2FFF
+RAMTOP		equ	$FFFF	;	RAM ends at $FFFF
 TEMP		equ RAMTOP	; 	Temporary storage byte
 KDATA1		equ TEMP-1	;	keyed input for addresses
 KDATA2		equ KDATA1-1
