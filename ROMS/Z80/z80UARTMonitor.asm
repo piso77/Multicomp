@@ -30,6 +30,8 @@
 UART_PORT	equ 81h	; The UART's data buffer for in/out
 UART_LSR	equ	80h	; Line Status Register (used for transmitter empty bit)
 
+MAPPER_BASE	equ 90h ; memory mapper reg base
+MAPPER_SIZE	equ 10h ; memory mapper reg size
 
 UART_DLL	equ	80h	; LSB of divisor latch
 UART_DLM	equ 81h	; MSB of divisor latch (DLAB=1)
@@ -61,6 +63,17 @@ STACK		equ BUFFER-1	; then we have the stack
 	org 0
 	
 	LD SP,STACK
+
+; linear memory mapper setup
+    ld a, MAPPER_SIZE
+	ld b, $00
+	ld C, MAPPER_BASE
+mapper_setup:
+    OUT (C), b
+    inc b
+	inc c
+    cp b
+    jp nz, mapper_setup
 
 init:
 	LD HL,0000h
