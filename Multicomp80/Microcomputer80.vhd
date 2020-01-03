@@ -174,8 +174,7 @@ port map(
 	write_enable => not n_ioWR,
 	page_reg_read => not n_ioRD,
 	mapen => not n_basRomCS,
-	abus_high => '0' & cpuAddress(15 downto 13),
-	abus_low => cpuAddress(3 downto 0),
+	abus => cpuAddress,
 	dbus_in => cpuDataOut,
 	dbus_out => mapperDataOut
 --	translated_addr => x"0000"

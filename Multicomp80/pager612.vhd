@@ -25,8 +25,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity pager612 is
 	Port (
 			clk 			: in  STD_LOGIC;
-			abus_high		: in  STD_LOGIC_VECTOR (15 downto 12);
-			abus_low		: in  STD_LOGIC_VECTOR (3 downto 0);
+			abus			: in  STD_LOGIC_VECTOR (15 downto 0);
 			access_regs		: in  STD_LOGIC;				-- 1 = read/write registers / CS
 			write_enable	: in  STD_LOGIC;				-- 1 = write to register
 			page_reg_read	: in  STD_LOGIC;				-- 1 = read from register
@@ -40,7 +39,12 @@ end pager612;
 architecture Behavioral of pager612 is
 	type abank is array (natural range 0 to 15) of std_logic_vector(7 downto 0);
 	signal regs   : abank;
+	signal abus_low		: std_logic_vector(3 downto 0);
+	signal abus_high	: std_logic_vector(3 downto 0);
 begin
+	abus_low <= abus(3 downto 0);
+	abus_high <= abus(15 downto 12);
+
 	process(clk)
 	begin
 		if rising_edge(clk) then
@@ -53,12 +57,12 @@ begin
 
 	-- read paging register / READ MODE
 	dbus_out <=
-		regs(to_integer(unsigned(abus_low(3 downto 0)))) when access_regs = '1' and page_reg_read = '1' else
+		regs(to_integer(unsigned(abus_low))) when access_regs = '1' and page_reg_read = '1' else
 		x"BF";
 
 	-- mapping mode / MAP MODE
 	translated_addr <=
-		regs(to_integer(unsigned(abus_high(15 downto 12)))) when access_regs = '0' and mapen = '1' else
-		x"0" & abus_high(15 downto 12);
+		regs(to_integer(unsigned(abus_high))) when access_regs = '0' and mapen = '1' else
+		x"0" & abus_high;
 
 end Behavioral;
