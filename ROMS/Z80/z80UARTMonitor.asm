@@ -515,10 +515,17 @@ inituart:
 	OUT (UART_LCR), A
 	RET
 
+upperinchar:
+	call inchar
+	CP 0x61			; 0x61 is 'a'
+	ret c			; if C=1: A<0x61, else: A>=0x61
+	sub 0x20		; uppercase the char
+	ret
+
 inport:
 	ld DE, INIOTXT
 	call otext
-	CALL inchar
+	CALL upperinchar
 	CALL outchar	; echo the character
 	CALL ATOHEX		; convert to binary
 	SLA A
@@ -526,7 +533,7 @@ inport:
 	SLA A
 	SLA A
 	LD B, A
-	CALL inchar
+	CALL upperinchar
 	CALL outchar
 	CALL ATOHEX
 	OR B
@@ -541,7 +548,7 @@ inport:
 outport:
 	ld DE, OUTIOTXT
 	call otext
-	CALL inchar
+	CALL upperinchar
 	CALL outchar	; echo the character
 	CALL ATOHEX		; convert to binary
 	SLA A
@@ -549,14 +556,14 @@ outport:
 	SLA A
 	SLA A
 	LD B, A
-	CALL inchar
+	CALL upperinchar
 	CALL outchar
 	CALL ATOHEX
 	OR B
 	LD C, A
 	ld DE, IOTXT
 	call otext
-	CALL inchar
+	CALL upperinchar
 	CALL outchar	; echo the character
 	CALL ATOHEX		; convert to binary
 	SLA A
@@ -564,7 +571,7 @@ outport:
 	SLA A
 	SLA A
 	LD B, A
-	CALL inchar
+	CALL upperinchar
 	CALL outchar
 	CALL ATOHEX
 	OR B
