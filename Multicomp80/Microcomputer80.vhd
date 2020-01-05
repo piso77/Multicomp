@@ -173,7 +173,7 @@ port map(
 	access_regs => mapperCS,
 	write_enable => not n_ioWR,
 	page_reg_read => not n_ioRD,
-	mapen => not n_basRomCS,
+	mapen => n_basRomCS,
 	abus => cpuAddress,
 	dbus_in => cpuDataOut,
 	dbus_out => mapperDataOut
