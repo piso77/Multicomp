@@ -63,7 +63,7 @@ begin
 	-- mapping mode / MAP MODE
 	translated_addr <=
 		--regs(to_integer(unsigned(abus_high))) when mapen = '1' else
-		abus;
+		abus when mapen = '1' else (others => 'Z');
 		--x"0" & abus_high;
 
 end Behavioral;
