@@ -25,9 +25,9 @@ entity Microcomputer is
 
 		sram_data		: inout std_logic_vector(7 downto 0);
 		sram_addr		: out std_logic_vector(15 downto 0);
-		sram_we		: out std_logic;
-		sram_ce		: out std_logic;
-		sram_oe		: out std_logic;
+		n_sram_we		: out std_logic;
+		n_sram_ce		: out std_logic;
+		n_sram_oe		: out std_logic;
 
 		rxd1			: in std_logic;
 		txd1			: out std_logic;
@@ -142,9 +142,9 @@ port map(
 
 sram_addr(15 downto 0) <= cpuAddress(15 downto 0);
 sram_data <= cpuDataOut when n_memWR='0' else (others => 'Z');
-sram_we <= n_memWR or n_externalRamCS;
-sram_oe <= n_memRD or n_externalRamCS;
-sram_ce <= n_externalRamCS;
+n_sram_we <= n_memWR or n_externalRamCS;
+n_sram_oe <= n_memRD or n_externalRamCS;
+n_sram_ce <= n_externalRamCS;
 
 -- ____________________________________________________________________________________
 -- INPUT/OUTPUT DEVICES GO HERE
