@@ -170,9 +170,9 @@ port map(
 mapper: entity work.pager612
 port map(
 	clk => clk,
-	access_regs => mapperCS,
-	write_enable => not n_ioWR,
-	page_reg_read => not n_ioRD,
+	mapperCS => mapperCS,
+	mapperWE => not n_ioWR,
+	mapperRE => not n_ioRD,
 	mapen => n_basRomCS,
 	abus => cpuAddress,
 	dbus_in => cpuDataOut,

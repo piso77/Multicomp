@@ -26,9 +26,9 @@ entity pager612 is
 	Port (
 			clk 			: in  STD_LOGIC;
 			abus			: in  STD_LOGIC_VECTOR (15 downto 0);
-			access_regs		: in  STD_LOGIC;				-- 1 = read/write registers / CS
-			write_enable	: in  STD_LOGIC;				-- 1 = write to register
-			page_reg_read	: in  STD_LOGIC;				-- 1 = read from register
+			mapperCS		: in  STD_LOGIC;				-- 1 = read/write registers / CS
+			mapperWE		: in  STD_LOGIC;				-- 1 = write to register
+			mapperRE		: in  STD_LOGIC;				-- 1 = read from register
 			dbus_in 		: in  STD_LOGIC_VECTOR (7 downto 0);
 			dbus_out 		: out  STD_LOGIC_VECTOR (7 downto 0);
 			mapen 			: in  STD_LOGIC;				-- 1 = enable mapping / MM
