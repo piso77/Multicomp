@@ -32,7 +32,7 @@ entity pager612 is
 			dbus_in 		: in  STD_LOGIC_VECTOR (7 downto 0);
 			dbus_out 		: out  STD_LOGIC_VECTOR (7 downto 0);
 			mapen 			: in  STD_LOGIC;				-- 1 = enable mapping / MM
-			translated_addr : out  STD_LOGIC_VECTOR (15 downto 0)
+			translated_addr : out  STD_LOGIC_VECTOR (19 downto 0)
 		);
 end pager612;
 
@@ -62,7 +62,7 @@ begin
 
 	-- mapping mode / MAP MODE
 	translated_addr <=
-		regs(to_integer(unsigned(abus_high)))(3 downto 0) & abus(11 downto 0) when mapen = '1' else
+		regs(to_integer(unsigned(abus_high))) & abus(11 downto 0) when mapen = '1' else
 		(others => 'Z');
 
 end Behavioral;
