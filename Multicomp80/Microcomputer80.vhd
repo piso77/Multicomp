@@ -68,6 +68,8 @@ architecture struct of Microcomputer is
 	signal cpuDataOut					: std_logic_vector(7 downto 0);
 	signal cpuDataIn					: std_logic_vector(7 downto 0);
 
+	signal mapperAddress				: std_logic_vector(15 downto 0);
+
 	signal basRomData					: std_logic_vector(7 downto 0);
 	signal internalRam1DataOut		: std_logic_vector(7 downto 0);
 	signal internalRam2DataOut		: std_logic_vector(7 downto 0);
@@ -140,7 +142,7 @@ port map(
 -- ____________________________________________________________________________________
 -- RAM GOES HERE
 
-sram_addr(15 downto 0) <= cpuAddress(15 downto 0);
+sram_addr <= mapperAddress;
 sram_data <= cpuDataOut when n_memWR='0' else (others => 'Z');
 n_sram_we <= n_memWR or n_externalRamCS;
 n_sram_oe <= n_memRD or n_externalRamCS;
@@ -176,8 +178,8 @@ port map(
 	mapen => n_basRomCS,
 	abus => cpuAddress,
 	dbus_in => cpuDataOut,
-	dbus_out => mapperDataOut
---	translated_addr => x"0000"
+	dbus_out => mapperDataOut,
+	translated_addr => mapperAddress
 );
 
 -- ____________________________________________________________________________________
