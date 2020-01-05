@@ -49,7 +49,7 @@ begin
 	begin
 		if rising_edge(clk) then
 			-- write to paging register / WRITE MODE
-			if access_regs = '1' and write_enable = '1' then
+			if mapperCS = '1' and mapperWE = '1' then
 				regs(to_integer(unsigned(abus_low(3 downto 0)))) <= dbus_in;
 			end if;
 		end if;
@@ -57,12 +57,12 @@ begin
 
 	-- read paging register / READ MODE
 	dbus_out <=
-		regs(to_integer(unsigned(abus_low))) when access_regs = '1' and page_reg_read = '1' else
+		regs(to_integer(unsigned(abus_low))) when mapperCS = '1' and mapperRE = '1' else
 		x"BF";
 
 	-- mapping mode / MAP MODE
 	translated_addr <=
-		regs(to_integer(unsigned(abus_high))) when access_regs = '0' and mapen = '1' else
+		regs(to_integer(unsigned(abus_high))) when mapperCS = '0' and mapen = '1' else
 		x"0" & abus_high;
 
 end Behavioral;
