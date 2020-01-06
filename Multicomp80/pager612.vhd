@@ -31,7 +31,6 @@ entity pager612 is
 			mapperRE		: in  STD_LOGIC;				-- 1 = read from register
 			dbus_in 		: in  STD_LOGIC_VECTOR (7 downto 0);
 			dbus_out 		: out  STD_LOGIC_VECTOR (7 downto 0);
-			mapen 			: in  STD_LOGIC;				-- 1 = enable mapping / MM
 			translated_addr : out  STD_LOGIC_VECTOR (19 downto 0)
 		);
 end pager612;
@@ -41,18 +40,23 @@ architecture Behavioral of pager612 is
 	signal banks		: abank := (others => (others => '0'));
 	signal nbank		: natural range 0 to 15;
 	signal abus_high	: natural range 0 to 15;
+	signal regs			: std_logic_vector(1 downto 0);
+	signal mapen		: std_logic := '0';
 begin
 	abus_high <= to_integer(unsigned(abus(15 downto 12)));
+	regs <= abus(1 downto 0);
 
 	process(clk)
 	begin
 		if rising_edge(clk) then
 			-- write to paging register / WRITE MODE
 			if mapperCS = '1' and mapperWE = '1' then
-				if abus(0) = '0' then
+				if regs = "00" then
 					nbank <= to_integer(unsigned(dbus_in));
-				else
+				elsif regs = "01" then
 					banks(nbank) <= dbus_in;
+				elsif regs = "10" then
+					mapen <= dbus_in(0);
 				end if;
 			end if;
 		end if;
@@ -67,6 +71,6 @@ begin
 	-- mapping mode / MAP MODE
 	translated_addr <=
 		banks(abus_high) & abus(11 downto 0) when mapen = '1' else
-		(others => 'Z');
+		b"0000" & abus;
 
 end Behavioral;
