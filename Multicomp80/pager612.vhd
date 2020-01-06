@@ -38,7 +38,7 @@ end pager612;
 
 architecture Behavioral of pager612 is
 	type abank is array (natural range 0 to 15) of std_logic_vector(7 downto 0);
-	signal regs   : abank;
+	signal regs   : abank := (others => (others => '0'));
 	signal abus_low		: std_logic_vector(3 downto 0);
 	signal abus_high	: std_logic_vector(3 downto 0);
 begin
