@@ -196,8 +196,8 @@ n_memRD <= n_RD or n_MREQ;
 n_basRomCS <= '0' when cpuAddress(15 downto 12) = "0000" else '1'; --4K at bottom of memory
 n_interface1CS <= '0' when cpuAddress(7 downto 1) = "1000000" and (n_ioWR='0' or
 					n_ioRD = '0') else '1'; -- 2 Bytes $80-$81
-mapperCS <= '1' when cpuAddress(7 downto 4) = "1001" and (n_ioWR='0' or
-					n_ioRD = '0') else '0'; -- 16 Bytes $90-$9F
+mapperCS <= '1' when cpuAddress(7 downto 1) = "1001000" and (n_ioWR='0' or
+					n_ioRD = '0') else '0'; -- 2 Bytes $90-$91
 n_externalRamCS<= not n_basRomCS;
 
 -- ____________________________________________________________________________________

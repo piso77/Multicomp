@@ -66,11 +66,12 @@ STACK		equ BUFFER-1	; then we have the stack
 ; linear memory mapper setup
     ld a, MAPPER_SIZE
 	ld b, $00
-	ld C, MAPPER_BASE
 mapper_setup:
+	ld C, MAPPER_BASE
     OUT (C), b
-    inc b
 	inc c
+	OUT (C), b
+	inc b
     cp b
     jp nz, mapper_setup
 

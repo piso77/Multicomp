@@ -38,31 +38,35 @@ end pager612;
 
 architecture Behavioral of pager612 is
 	type abank is array (natural range 0 to 15) of std_logic_vector(7 downto 0);
-	signal regs   : abank := (others => (others => '0'));
-	signal abus_low		: std_logic_vector(3 downto 0);
-	signal abus_high	: std_logic_vector(3 downto 0);
+	signal banks		: abank := (others => (others => '0'));
+	signal nbank		: natural range 0 to 15;
+	signal abus_high	: natural range 0 to 15;
 begin
-	abus_low <= abus(3 downto 0);
-	abus_high <= abus(15 downto 12);
+	abus_high <= to_integer(unsigned(abus(15 downto 12)));
 
 	process(clk)
 	begin
 		if rising_edge(clk) then
 			-- write to paging register / WRITE MODE
 			if mapperCS = '1' and mapperWE = '1' then
-				regs(to_integer(unsigned(abus_low(3 downto 0)))) <= dbus_in;
+				if abus(0) = '0' then
+					nbank <= to_integer(unsigned(dbus_in));
+				else
+					banks(nbank) <= dbus_in;
+				end if;
 			end if;
 		end if;
 	end process;
 
 	-- read paging register / READ MODE
 	dbus_out <=
-		regs(to_integer(unsigned(abus_low))) when mapperCS = '1' and mapperRE = '1' else
-		x"BF";
+		std_logic_vector(to_unsigned(nbank, dbus_out'length)) when mapperCS = '1' and mapperRE = '1' and abus(0) = '0' else
+		banks(nbank) when mapperCS = '1' and mapperRE = '1' and abus(0) = '1' else
+		(others => 'Z');
 
 	-- mapping mode / MAP MODE
 	translated_addr <=
-		regs(to_integer(unsigned(abus_high))) & abus(11 downto 0) when mapen = '1' else
+		banks(abus_high) & abus(11 downto 0) when mapen = '1' else
 		(others => 'Z');
 
 end Behavioral;
