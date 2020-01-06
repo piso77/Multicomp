@@ -21,7 +21,7 @@ architecture Behavioral of pager is
 	signal banks		: abank := (others => (others => '0'));
 	signal nbank		: natural range 0 to 15;
 	signal abus_high	: natural range 0 to 15;
-	signal cfgreg		: std_logic_vector(1 downto 0) := (others => '0');
+	signal cfgreg		: std_logic_vector(1 downto 0);
 	signal mapen		: std_logic := '0';
 begin
 	cfgreg <= abus(1 downto 0);
