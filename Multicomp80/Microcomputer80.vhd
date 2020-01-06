@@ -169,7 +169,7 @@ port map(
 	n_rts => rts1
 );
 
-mapper: entity work.pager612
+mapper: entity work.pager
 port map(
 	clk => clk,
 	mapperCS => mapperCS,

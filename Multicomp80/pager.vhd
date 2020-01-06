@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity pager612 is
+entity pager is
 	Port (
 			clk 			: in  STD_LOGIC;
 			abus			: in  STD_LOGIC_VECTOR (15 downto 0);
@@ -14,9 +14,9 @@ entity pager612 is
 			dbus_out 		: out  STD_LOGIC_VECTOR (7 downto 0);
 			translated_addr : out  STD_LOGIC_VECTOR (19 downto 0)
 		);
-end pager612;
+end pager;
 
-architecture Behavioral of pager612 is
+architecture Behavioral of pager is
 	type abank is array (natural range 0 to 15) of std_logic_vector(7 downto 0);
 	signal banks		: abank := (others => (others => '0'));
 	signal nbank		: natural range 0 to 15;
