@@ -24,7 +24,7 @@ entity Microcomputer is
 		clk33			: in std_logic;
 
 		sram_data		: inout std_logic_vector(7 downto 0);
-		sram_addr		: out std_logic_vector(19 downto 0);
+		sram_addr		: out std_logic_vector(20 downto 0);
 		n_sram_we		: out std_logic;
 		n_sram_ce		: out std_logic;
 		n_sram_oe		: out std_logic;
@@ -68,7 +68,7 @@ architecture struct of Microcomputer is
 	signal cpuDataOut					: std_logic_vector(7 downto 0);
 	signal cpuDataIn					: std_logic_vector(7 downto 0);
 
-	signal mapperAddress				: std_logic_vector(19 downto 0);
+	signal mapperAddress				: std_logic_vector(20 downto 0);
 
 	signal basRomData					: std_logic_vector(7 downto 0);
 	signal internalRam1DataOut		: std_logic_vector(7 downto 0);
